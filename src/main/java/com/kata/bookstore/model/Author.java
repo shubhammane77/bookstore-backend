@@ -19,10 +19,6 @@ public class Author {
     @Column
     private String name;
 
-    @OneToMany
-    @JoinColumn(name = "author_id")
-    private Set<Book> books;
-
     public Author(String name) {
         this.name = name;
     }
