@@ -16,7 +16,7 @@ public class Book {
     private int id;
     @Column
     private String title;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
     @Column

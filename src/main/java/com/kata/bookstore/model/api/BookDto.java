@@ -13,6 +13,7 @@ public class BookDto implements Serializable {
     private String title;
     private Author author;
     private BigDecimal unitPrice;
+    private int stockQuantity;
     private String genres;
     private String imageUrl;
 

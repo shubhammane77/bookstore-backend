@@ -15,4 +15,9 @@ public class BookService {
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
+
+    public List<Book> searchBook(String searchCriteria) {
+        return bookRepository.findByTitleContainingIgnoreCase(searchCriteria);
+    }
+
 }
