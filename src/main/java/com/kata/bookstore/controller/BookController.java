@@ -1,8 +1,8 @@
 package com.kata.bookstore.controller;
 
-import com.kata.bookstore.model.api.BookDto;
-import com.kata.bookstore.service.BookService;
 import com.kata.bookstore.mapper.MappingService;
+import com.kata.bookstore.model.api.BookResponse;
+import com.kata.bookstore.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,15 +21,15 @@ public class BookController {
     MappingService mappingService;
 
     @GetMapping("getAllBooks")
-    public List<BookDto> getAllBooks(){
+    public List<BookResponse> getAllBooks(){
         var bookList = bookService.getAllBooks();
-        return mappingService.mapList(bookList, BookDto.class);
+        return mappingService.mapList(bookList, BookResponse.class);
     }
 
     @GetMapping("searchBook")
-    public List<BookDto> searchBook(@RequestParam String searchCriteria){
+    public List<BookResponse> searchBook(@RequestParam String searchCriteria){
         var bookList = bookService.searchBook(searchCriteria);
-        return mappingService.mapList(bookList, BookDto.class);
+        return mappingService.mapList(bookList, BookResponse.class);
     }
 
 }

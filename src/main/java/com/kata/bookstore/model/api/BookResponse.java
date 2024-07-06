@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter @Setter
-public class BookDto implements Serializable {
+public class BookResponse implements Serializable {
     private int id;
     private String title;
     private Author author;

@@ -107,3 +107,6 @@ INSERT INTO Books (title, author_id, unit_price, stock_quantity, genres, image_u
 INSERT INTO Books (title, author_id, unit_price, stock_quantity, genres, image_url) VALUES ('The Three Musketeers', 39, 11.99, 90, 'Historical Adventure', 'https://covers.openlibrary.org/b/olid/OL13583998M-L.jpg');
 INSERT INTO Books (title, author_id, unit_price, stock_quantity, genres, image_url) VALUES ('Oliver Twist', 40, 9.99, 75, 'Classic', 'https://covers.openlibrary.org/b/olid/OL26340760M-L.jpg');
 INSERT INTO Books (title, author_id, unit_price, stock_quantity, genres, image_url) VALUES ('A Christmas Carol', 40, 6.99, 60, 'Classic', 'https://covers.openlibrary.org/b/olid/OL28896984M-L.jpg');
+
+
+INSERT INTO Users (user_name, first_name, last_name, email_address) VALUES ('Admin','Admin','Admin', 'sample@test.com');

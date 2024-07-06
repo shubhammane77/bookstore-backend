@@ -1,12 +1,9 @@
 package com.kata.bookstore.model;
 
 import jakarta.persistence.*;
-import jdk.jfr.Enabled;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor
 @Entity
