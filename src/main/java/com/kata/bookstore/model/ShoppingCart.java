@@ -2,7 +2,6 @@ package com.kata.bookstore.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -12,26 +11,22 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "ShoppingCarts")
 public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "user_id")
-    private int userId;
     @Column
     private BigDecimal totalPrice;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShoppingCartItem> shoppingCartItems;
 
-    public ShoppingCart(int userId) {
-        this.userId = userId;
+    public ShoppingCart() {
         this.totalPrice = BigDecimal.ZERO;
     }
 

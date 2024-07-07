@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Getter @Setter @NoArgsConstructor
 @Entity
@@ -18,8 +18,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "user_id")
-    private int userId;
     @Column
     private BigDecimal totalPrice;
     @Column
@@ -27,18 +25,18 @@ public class Order {
     @Column
     private Date orderDate;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrderItem> orderItems;
+    private List<OrderItem> orderItems;
 
-    public Order(int userId, BigDecimal totalPrice, OrderStatus status, Date orderDate) {
-        this.userId = userId;
+    public Order(User user, BigDecimal totalPrice, OrderStatus status, Date orderDate) {
+        this.user = user;
         this.totalPrice = totalPrice;
         this.status = status;
         this.orderDate = orderDate;
-        this.orderItems = new HashSet<>();
+        this.orderItems = new ArrayList<>();
     }
 
 

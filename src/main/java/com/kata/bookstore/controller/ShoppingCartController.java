@@ -50,7 +50,7 @@ public class ShoppingCartController {
 
     @DeleteMapping("removeCartItem")
     public ResponseEntity<UpdateShoppingCartResponse> removeCartItem(@RequestParam int cartId, int bookId) {
-        var result = shoppingCartService.removeCartItem(cartId,bookId);
+        var result = shoppingCartService.removeCartItem(cartId, bookId);
         if (result.getErrorMessage() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }

@@ -34,29 +34,29 @@ public class ShoppingCartTests {
     ShoppingCartService shoppingCartService;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void findById(){
+    public void findById() {
         ShoppingCart mockShoppingCart = new ShoppingCart();
         when(shoppingCartRepository.findByUserId(1)).thenReturn(mockShoppingCart);
         when(modelMapper.map(mockShoppingCart, ShoppingCartResponse.class)).thenReturn(new ShoppingCartResponse());
         var result = shoppingCartService.getShoppingCart(1);
-        assert(result != null);
+        assert (result != null);
     }
 
     @Test
-    public void createShoppingCart_shouldReturnErrorForInvalidUser(){
+    public void createShoppingCart_shouldReturnErrorForInvalidUser() {
         CreateCartRequest createCartRequest = new CreateCartRequest();
         createCartRequest.setUserId(0);
         var result = shoppingCartService.createShoppingCart(createCartRequest);
-        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("User not found"));
+        assert (result.getErrorMessage() != null && result.getErrorMessage().equals("User not found"));
     }
 
     @Test
-    public void createShoppingCart_shouldReturnErrorForExistingCart(){
+    public void createShoppingCart_shouldReturnErrorForExistingCart() {
         CreateCartRequest createCartRequest = new CreateCartRequest();
         createCartRequest.setUserId(1);
         ShoppingCart mockShoppingCart = new ShoppingCart();
@@ -66,23 +66,24 @@ public class ShoppingCartTests {
 
         when(shoppingCartRepository.findByUserId(1)).thenReturn(mockShoppingCart);
         var result = shoppingCartService.createShoppingCart(createCartRequest);
-        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("Shopping cart already exists"));
+        assert (result.getErrorMessage() != null && result.getErrorMessage().equals("Shopping cart already exists"));
     }
 
     @Test
-    public void updateShoppingCart_shouldReturnErrorForInvalidBook(){
+    public void updateShoppingCart_shouldReturnErrorForInvalidBook() {
         ShoppingCart mockShoppingCart = new ShoppingCart();
         when(shoppingCartRepository.findById(1)).thenReturn(Optional.of(mockShoppingCart));
 
-        var result = shoppingCartService.updateBookQuantity(1,0,0);
-        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("book not found"));
+        var result = shoppingCartService.updateBookQuantity(1, 0, 0);
+        assert (result.getErrorMessage() != null && result.getErrorMessage().equals("book not found"));
     }
 
     @Test
-    public void updateShoppingCart_shouldReturnErrorForInvalidCart(){
-        var result = shoppingCartService.updateBookQuantity(0,0,0);
-        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("Cart not found"));
+    public void updateShoppingCart_shouldReturnErrorForInvalidCart() {
+        var result = shoppingCartService.updateBookQuantity(0, 0, 0);
+        assert (result.getErrorMessage() != null && result.getErrorMessage().equals("Cart not found"));
     }
+
     @Test
     public void removeCartItem_shouldReturnErrorForNonExistingBook() {
         ShoppingCart mockCart = new ShoppingCart();
@@ -96,7 +97,7 @@ public class ShoppingCartTests {
 
         var result = shoppingCartService.removeCartItem(1, 1); // Remove book with id 1
 
-        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("book not found")); // Check for error message
+        assert (result.getErrorMessage() != null && result.getErrorMessage().equals("book not found")); // Check for error message
     }
 
     @Test
@@ -112,7 +113,7 @@ public class ShoppingCartTests {
 
         var result = shoppingCartService.removeCartItem(1, 2); // Remove book with id 2
 
-        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("book not present in cart")); // Check for error message
+        assert (result.getErrorMessage() != null && result.getErrorMessage().equals("book not present in cart")); // Check for error message
     }
 
     @Test
@@ -121,6 +122,6 @@ public class ShoppingCartTests {
         when(shoppingCartRepository.findById(1)).thenReturn(Optional.empty());
         var result = shoppingCartService.deleteCart(1); // Remove book with id 1
 
-        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("Cart not found")); // Check for error message
+        assert (result.getErrorMessage() != null && result.getErrorMessage().equals("Cart not found")); // Check for error message
     }
 }

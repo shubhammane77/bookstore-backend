@@ -14,14 +14,12 @@ public class ShoppingCartItem {
     private int id;
     @Column
     private int quantity;
-    @Column(name = "book_id")
-    private int bookId;
     @ManyToOne
     @JoinColumn(name = "shopping_cart_id", nullable = false)
     private ShoppingCart shoppingCart;
 
     @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false, updatable = false, insertable = false)
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
 }

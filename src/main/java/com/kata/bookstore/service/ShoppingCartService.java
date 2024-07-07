@@ -8,7 +8,10 @@ import com.kata.bookstore.model.Book;
 import com.kata.bookstore.model.ShoppingCart;
 import com.kata.bookstore.model.ShoppingCartItem;
 import com.kata.bookstore.model.User;
-import com.kata.bookstore.model.api.*;
+import com.kata.bookstore.model.api.CreateCartRequest;
+import com.kata.bookstore.model.api.CreateCartResponse;
+import com.kata.bookstore.model.api.ShoppingCartResponse;
+import com.kata.bookstore.model.api.UpdateShoppingCartResponse;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -36,7 +39,7 @@ public class ShoppingCartService {
 
     public ShoppingCartResponse getShoppingCart(int userId) {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
-        if(shoppingCart == null){
+        if (shoppingCart == null) {
             return null;
         }
         return modelMapper.map(shoppingCart, ShoppingCartResponse.class);
@@ -55,6 +58,7 @@ public class ShoppingCartService {
             }
             ShoppingCart shoppingCart = modelMapper.map(createCartRequest, ShoppingCart.class);
             shoppingCart.getShoppingCartItems().stream().forEach(shoppingCartItem -> shoppingCartItem.setShoppingCart(shoppingCart));
+            shoppingCart.setUser(user);
             var result = shoppingCartRepository.save(shoppingCart);
             createCartResponse.setCartId(result.getId());
             return createCartResponse;
@@ -77,13 +81,13 @@ public class ShoppingCartService {
             Book book = bookRepository.findById(bookId)
                     .orElseThrow(() -> new InvalidInputException("book not found"));
             // Calculate price
-            var modifiedCartPrice = calculateModifiedCartPrice(cart,book,quantity);
+            var modifiedCartPrice = calculateModifiedCartPrice(cart, book, quantity);
 
             //existing book check
             Optional<ShoppingCartItem> cartItem = cart.getShoppingCartItems().stream().filter(x -> x.getBook().getId() == bookId).findFirst();
             if (cartItem.isEmpty()) {
                 ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
-                shoppingCartItem.setBookId(bookId);
+                shoppingCartItem.setBook(book);
                 shoppingCartItem.setQuantity(quantity);
                 shoppingCartItem.setShoppingCart(cart);
                 cart.addShoppingCartItem(shoppingCartItem);
@@ -118,13 +122,13 @@ public class ShoppingCartService {
 
 
             //existing book check
-            Optional<ShoppingCartItem> cartItemToBeRemoved = cart.getShoppingCartItems().stream().filter(x-> x.getBookId() == bookId).findFirst();
-            if(cartItemToBeRemoved.isEmpty()){
+            Optional<ShoppingCartItem> cartItemToBeRemoved = cart.getShoppingCartItems().stream().filter(x -> x.getBook().getId() == bookId).findFirst();
+            if (cartItemToBeRemoved.isEmpty()) {
                 throw new InvalidInputException("book not present in cart");
             }
             cart.getShoppingCartItems().remove(cartItemToBeRemoved.get());
             // Calculate price
-            var modifiedCartPrice = calculateModifiedCartPrice(cart,book,0);
+            var modifiedCartPrice = calculateModifiedCartPrice(cart, book, 0);
 
             cart.setTotalPrice(modifiedCartPrice);
             shoppingCartRepository.save(cart);
@@ -159,11 +163,11 @@ public class ShoppingCartService {
     }
 
 
-    private BigDecimal calculateModifiedCartPrice(ShoppingCart cart, Book book, int quantity){
+    private BigDecimal calculateModifiedCartPrice(ShoppingCart cart, Book book, int quantity) {
         BigDecimal existingPriceWithoutBookId = BigDecimal.ZERO;
-        for(int i=0;i<cart.getShoppingCartItems().size();i++){
+        for (int i = 0; i < cart.getShoppingCartItems().size(); i++) {
             var currentItem = cart.getShoppingCartItems().get(i);
-            if(currentItem.getBook().getId() != book.getId()){
+            if (currentItem.getBook().getId() != book.getId()) {
                 existingPriceWithoutBookId = existingPriceWithoutBookId.
                         add(BigDecimal.valueOf(currentItem.getQuantity()).multiply(currentItem.getBook().getUnitPrice()));
             }

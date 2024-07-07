@@ -19,13 +19,13 @@ public class BookController {
     MappingService mappingService;
 
     @GetMapping("getAllBooks")
-    public List<BookResponse> getAllBooks(){
+    public List<BookResponse> getAllBooks() {
         var bookList = bookService.getAllBooks();
         return mappingService.mapList(bookList, BookResponse.class);
     }
 
     @GetMapping("searchBook")
-    public List<BookResponse> searchBook(@RequestParam String searchCriteria){
+    public List<BookResponse> searchBook(@RequestParam String searchCriteria) {
         var bookList = bookService.searchBook(searchCriteria);
         return mappingService.mapList(bookList, BookResponse.class);
     }
