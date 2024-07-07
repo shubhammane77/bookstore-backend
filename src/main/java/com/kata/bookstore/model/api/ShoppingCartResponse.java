@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter @Setter
 public class ShoppingCartResponse implements Serializable {
-    private int id;
+    private int shoppingCartId;
     private BigDecimal totalPrice;
     private List<ShoppingCartItemResponse> shoppingCartItems;
 }

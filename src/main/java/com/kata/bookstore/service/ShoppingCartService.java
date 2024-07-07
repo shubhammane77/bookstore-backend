@@ -57,9 +57,8 @@ public class ShoppingCartService {
                 throw new InvalidInputException("Shopping cart already exists");
             }
             ShoppingCart shoppingCart = modelMapper.map(createCartRequest, ShoppingCart.class);
-
+            shoppingCart.getShoppingCartItems().stream().forEach(shoppingCartItem -> shoppingCartItem.setShoppingCart(shoppingCart));
             var result = shoppingCartRepository.save(shoppingCart);
-
             createCartResponse.setCartId(result.getId());
             return createCartResponse;
         } catch (InvalidInputException ex) {
@@ -85,10 +84,9 @@ public class ShoppingCartService {
 
             if (cartItem.isEmpty()) {
                 ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
-
                 shoppingCartItem.setBookId(bookId);
                 shoppingCartItem.setQuantity(quantity);
-                shoppingCartItem.setShoppingCartId(cartId);
+               shoppingCartItem.setShoppingCart(cart);
                 cart.addShoppingCartItem(shoppingCartItem);
                 cart.setTotalPrice(totalPrice);
                 shoppingCartRepository.save(cart);

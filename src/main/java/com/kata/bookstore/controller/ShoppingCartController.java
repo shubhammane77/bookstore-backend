@@ -12,6 +12,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/v1/cart")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ShoppingCartController {
     @Autowired
     ShoppingCartService shoppingCartService;

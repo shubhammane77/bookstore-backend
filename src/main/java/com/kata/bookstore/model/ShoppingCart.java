@@ -6,10 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "ShoppingCarts")
 public class ShoppingCart {
@@ -32,15 +35,17 @@ public class ShoppingCart {
         this.totalPrice = BigDecimal.ZERO;
     }
 
-    public BigDecimal calculateTotalPrice(){
+    public BigDecimal calculateTotalPrice() {
         var totalPriceList = shoppingCartItems.stream()
                 .map(x -> BigDecimal.valueOf(x.getQuantity()).multiply(x.getBook().getUnitPrice()))
                 .collect(Collectors.toList());
         return totalPriceList.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public void addShoppingCartItem(ShoppingCartItem shoppingCartItem){
-        if(this.shoppingCartItems!=null)
-            this.shoppingCartItems.add(shoppingCartItem);
+    public void addShoppingCartItem(ShoppingCartItem shoppingCartItem) {
+        if (this.shoppingCartItems == null)
+            this.shoppingCartItems = new ArrayList<>();
+        this.shoppingCartItems.add(shoppingCartItem);
+
     }
 }
