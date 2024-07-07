@@ -71,7 +71,7 @@ public class ShoppingCartService {
         }
     }
 
-    public UpdateShoppingCartResponse updateBookQuantity(int cartId, int bookId, int quantity, BigDecimal totalPrice) {
+    public UpdateShoppingCartResponse updateBookQuantity(int cartId, int bookId, int quantity) {
         //
         UpdateShoppingCartResponse updateShoppingCartResponse = new UpdateShoppingCartResponse();
         try {
@@ -79,21 +79,23 @@ public class ShoppingCartService {
                     .orElseThrow(() -> new InvalidInputException("Cart item not found"));
             Book book = bookRepository.findById(bookId)
                     .orElseThrow(() -> new InvalidInputException("book not found"));
+            // Calculate price
+            var modifiedCartPrice = calculateModifiedCartPrice(cart,book,quantity);
 
+            //existing book check
             Optional<ShoppingCartItem> cartItem = cart.getShoppingCartItems().stream().filter(x -> x.getBook().getId() == bookId).findFirst();
-
             if (cartItem.isEmpty()) {
                 ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
                 shoppingCartItem.setBookId(bookId);
                 shoppingCartItem.setQuantity(quantity);
-               shoppingCartItem.setShoppingCart(cart);
+                shoppingCartItem.setShoppingCart(cart);
                 cart.addShoppingCartItem(shoppingCartItem);
-                cart.setTotalPrice(totalPrice);
+                cart.setTotalPrice(modifiedCartPrice);
                 shoppingCartRepository.save(cart);
                 updateShoppingCartResponse.setTotalPrice(cart.getTotalPrice());
                 return updateShoppingCartResponse;
             }
-            cart.setTotalPrice(totalPrice);
+            cart.setTotalPrice(modifiedCartPrice);
             cart.getShoppingCartItems().stream().filter(x -> x.getBook().getId() == bookId).forEach(x -> x.setQuantity(quantity));
             shoppingCartRepository.save(cart);
             updateShoppingCartResponse.setTotalPrice(cart.getTotalPrice());
@@ -106,5 +108,51 @@ public class ShoppingCartService {
             logger.error("Error while creating cart... " + ex.getMessage());
             throw ex;
         }
+    }
+
+    public UpdateShoppingCartResponse removeCartItem(int cartId, int bookId) {
+        //
+        UpdateShoppingCartResponse updateShoppingCartResponse = new UpdateShoppingCartResponse();
+        try {
+            ShoppingCart cart = shoppingCartRepository.findById(cartId)
+                    .orElseThrow(() -> new InvalidInputException("Cart item not found"));
+            Book book = bookRepository.findById(bookId)
+                    .orElseThrow(() -> new InvalidInputException("book not found"));
+
+
+            //existing book check
+            Optional<ShoppingCartItem> cartItemToBeRemoved = cart.getShoppingCartItems().stream().filter(x-> x.getBookId() == bookId).findFirst();
+            if(cartItemToBeRemoved.isEmpty()){
+                throw new InvalidInputException("book not present in cart");
+            }
+            cart.getShoppingCartItems().remove(cartItemToBeRemoved.get());
+            // Calculate price
+            var modifiedCartPrice = calculateModifiedCartPrice(cart,book,0);
+
+            cart.setTotalPrice(modifiedCartPrice);
+            shoppingCartRepository.save(cart);
+            updateShoppingCartResponse.setTotalPrice(cart.getTotalPrice());
+            return updateShoppingCartResponse;
+        } catch (InvalidInputException ex) {
+            logger.error("Exception while updating cart" + ex.getMessage());
+            updateShoppingCartResponse.setErrorMessage(ex.getMessage());
+            return updateShoppingCartResponse;
+        } catch (Exception ex) {
+            logger.error("Error while creating cart... " + ex.getMessage());
+            throw ex;
+        }
+    }
+
+    private BigDecimal calculateModifiedCartPrice(ShoppingCart cart, Book book, int quantity){
+        BigDecimal existingPriceWithoutBookId = BigDecimal.ZERO;
+        for(int i=0;i<cart.getShoppingCartItems().size();i++){
+            var currentItem = cart.getShoppingCartItems().get(i);
+            if(currentItem.getBook().getId() != book.getId()){
+                existingPriceWithoutBookId = existingPriceWithoutBookId.
+                        add(BigDecimal.valueOf(currentItem.getQuantity()).multiply(currentItem.getBook().getUnitPrice()));
+            }
+        }
+        BigDecimal modifiedBookPrice = book.getUnitPrice().multiply(BigDecimal.valueOf(quantity));
+        return existingPriceWithoutBookId.add(modifiedBookPrice);
     }
 }

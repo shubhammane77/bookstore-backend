@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/v1/cart")
@@ -40,10 +41,19 @@ public class ShoppingCartController {
 
     @PostMapping("update")
     public ResponseEntity<UpdateShoppingCartResponse> updateShoppingCart(@RequestBody UpdateShoppingCartRequest updateShoppingCartRequest) {
-        var result = shoppingCartService.updateBookQuantity(updateShoppingCartRequest.getCartId(), updateShoppingCartRequest.getBookId(), updateShoppingCartRequest.getQuantity(), updateShoppingCartRequest.getTotalPrice());
+        var result = shoppingCartService.updateBookQuantity(updateShoppingCartRequest.getCartId(), updateShoppingCartRequest.getBookId(), updateShoppingCartRequest.getQuantity());
         if (result.getErrorMessage() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
         return new ResponseEntity(result, CREATED);
+    }
+
+    @DeleteMapping("removeCartItem")
+    public ResponseEntity<UpdateShoppingCartResponse> removeCartItem(@RequestParam int cartId, int bookId) {
+        var result = shoppingCartService.removeCartItem(cartId,bookId);
+        if (result.getErrorMessage() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+        return new ResponseEntity(result, OK);
     }
 }
