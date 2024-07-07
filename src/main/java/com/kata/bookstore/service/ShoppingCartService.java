@@ -8,10 +8,7 @@ import com.kata.bookstore.model.Book;
 import com.kata.bookstore.model.ShoppingCart;
 import com.kata.bookstore.model.ShoppingCartItem;
 import com.kata.bookstore.model.User;
-import com.kata.bookstore.model.api.CreateCartRequest;
-import com.kata.bookstore.model.api.CreateCartResponse;
-import com.kata.bookstore.model.api.ShoppingCartResponse;
-import com.kata.bookstore.model.api.UpdateShoppingCartResponse;
+import com.kata.bookstore.model.api.*;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -76,7 +73,7 @@ public class ShoppingCartService {
         UpdateShoppingCartResponse updateShoppingCartResponse = new UpdateShoppingCartResponse();
         try {
             ShoppingCart cart = shoppingCartRepository.findById(cartId)
-                    .orElseThrow(() -> new InvalidInputException("Cart item not found"));
+                    .orElseThrow(() -> new InvalidInputException("Cart not found"));
             Book book = bookRepository.findById(bookId)
                     .orElseThrow(() -> new InvalidInputException("book not found"));
             // Calculate price
@@ -115,7 +112,7 @@ public class ShoppingCartService {
         UpdateShoppingCartResponse updateShoppingCartResponse = new UpdateShoppingCartResponse();
         try {
             ShoppingCart cart = shoppingCartRepository.findById(cartId)
-                    .orElseThrow(() -> new InvalidInputException("Cart item not found"));
+                    .orElseThrow(() -> new InvalidInputException("Cart not found"));
             Book book = bookRepository.findById(bookId)
                     .orElseThrow(() -> new InvalidInputException("book not found"));
 
@@ -142,6 +139,25 @@ public class ShoppingCartService {
             throw ex;
         }
     }
+
+    public UpdateShoppingCartResponse deleteCart(int cartId) {
+        //
+        UpdateShoppingCartResponse updateShoppingCartResponse = new UpdateShoppingCartResponse();
+        try {
+            ShoppingCart cart = shoppingCartRepository.findById(cartId)
+                    .orElseThrow(() -> new InvalidInputException("Cart not found"));
+            shoppingCartRepository.delete(cart);
+            return updateShoppingCartResponse;
+        } catch (InvalidInputException ex) {
+            logger.error("Exception while updating cart" + ex.getMessage());
+            updateShoppingCartResponse.setErrorMessage(ex.getMessage());
+            return updateShoppingCartResponse;
+        } catch (Exception ex) {
+            logger.error("Error while creating cart... " + ex.getMessage());
+            throw ex;
+        }
+    }
+
 
     private BigDecimal calculateModifiedCartPrice(ShoppingCart cart, Book book, int quantity){
         BigDecimal existingPriceWithoutBookId = BigDecimal.ZERO;

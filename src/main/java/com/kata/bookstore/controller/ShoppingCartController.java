@@ -56,4 +56,22 @@ public class ShoppingCartController {
         }
         return new ResponseEntity(result, OK);
     }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<UpdateShoppingCartResponse> deleteCart(@RequestParam int cartId) {
+        var result = shoppingCartService.deleteCart(cartId);
+        if (result.getErrorMessage() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+        return new ResponseEntity(result, OK);
+    }
+
+//    @DeleteMapping("checkOut")
+//    public ResponseEntity<CheckOutResponse> checkOut(@RequestParam int cartId) {
+//        var result = shoppingCartService.checkOut(cartId);
+//        if (result.getErrorMessage() != null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+//        }
+//        return new ResponseEntity(result, OK);
+//    }
 }

@@ -81,7 +81,7 @@ public class ShoppingCartTests {
     @Test
     public void updateShoppingCart_shouldReturnErrorForInvalidCart(){
         var result = shoppingCartService.updateBookQuantity(0,0,0);
-        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("Cart item not found"));
+        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("Cart not found"));
     }
     @Test
     public void removeCartItem_shouldReturnErrorForNonExistingBook() {
@@ -113,5 +113,14 @@ public class ShoppingCartTests {
         var result = shoppingCartService.removeCartItem(1, 2); // Remove book with id 2
 
         assert(result.getErrorMessage() != null && result.getErrorMessage().equals("book not present in cart")); // Check for error message
+    }
+
+    @Test
+    public void delete_shouldReturnErrorForNonExistingCart() {
+
+        when(shoppingCartRepository.findById(1)).thenReturn(Optional.empty());
+        var result = shoppingCartService.deleteCart(1); // Remove book with id 1
+
+        assert(result.getErrorMessage() != null && result.getErrorMessage().equals("Cart not found")); // Check for error message
     }
 }
