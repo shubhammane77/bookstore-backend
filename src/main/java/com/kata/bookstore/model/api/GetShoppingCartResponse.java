@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Getter @Setter
-public class ShoppingCartResponse implements Serializable {
+public class GetShoppingCartResponse implements Serializable {
     private int shoppingCartId;
     private BigDecimal totalPrice;
-    private List<ShoppingCartItemResponse> shoppingCartItems;
+    private List<GetShoppingCartItemResponse> shoppingCartItems;
 }

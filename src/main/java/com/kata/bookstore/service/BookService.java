@@ -15,9 +15,11 @@ public class BookService {
     BookRepository bookRepository;
 
     @Value("${page.size:10}")
-    private int PageSize=10;
+    private int PageSize = 10;
     @Autowired
     BookPagingRepository bookPagingRepository;
+
+    /* Searches books in db through search criteria, returns pagination results */
     public Page<Book> searchBook(String searchCriteria, int pageNo) {
         PageRequest pageable = PageRequest.of(pageNo, PageSize);
         return bookPagingRepository.findByTitleContainingIgnoreCase(searchCriteria, pageable);

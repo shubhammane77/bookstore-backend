@@ -1,8 +1,4 @@
---INSERT INTO Authors (name) VALUES ('F. Scott Fitzgerald');
---INSERT INTO Books (title, author_id, unit_price, stock_quantity, image_url) VALUES ('The Great Gatsby', 1, 10.99, 20, 'test');
-
-
-
+--Initial data loading
 INSERT INTO Authors (name) VALUES ('J.K. Rowling');
 INSERT INTO Authors (name) VALUES ('J.R.R. Tolkien');
 INSERT INTO Authors (name) VALUES ('Suzanne Collins');
@@ -94,7 +90,3 @@ INSERT INTO Books (title, author_id, unit_price, genres) VALUES ('The Scarlet Le
 INSERT INTO Books (title, author_id, unit_price, genres) VALUES ('The Three Musketeers', 39, 11.99, 'Historical Adventure');
 INSERT INTO Books (title, author_id, unit_price, genres) VALUES ('Oliver Twist', 40, 9.99, 'Classic');
 INSERT INTO Books (title, author_id, unit_price, genres) VALUES ('A Christmas Carol', 40, 6.99, 'Classic');
-
-
-
-INSERT INTO Users (user_name, email_address) VALUES ('Admin', 'sample@test.com');

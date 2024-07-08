@@ -6,8 +6,9 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-@Getter @Setter
-public class ShoppingCartItemResponse implements Serializable {
+@Getter
+@Setter
+public class GetShoppingCartItemResponse implements Serializable {
     private int quantity;
     private Book book;
 

@@ -10,7 +10,7 @@ import com.kata.bookstore.model.ShoppingCartItem;
 import com.kata.bookstore.model.User;
 import com.kata.bookstore.model.api.CreateCartRequest;
 import com.kata.bookstore.model.api.CreateCartResponse;
-import com.kata.bookstore.model.api.ShoppingCartResponse;
+import com.kata.bookstore.model.api.GetShoppingCartResponse;
 import com.kata.bookstore.model.api.UpdateShoppingCartResponse;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -34,17 +34,20 @@ public class ShoppingCartService {
 
     @Autowired
     UserRepository userRepository;
+
     @Autowired
     private ModelMapper modelMapper;
 
-    public ShoppingCartResponse getShoppingCart(int userId) {
+    /* Returns existing cart of user */
+    public GetShoppingCartResponse getShoppingCart(int userId) {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
         if (shoppingCart == null) {
             return null;
         }
-        return modelMapper.map(shoppingCart, ShoppingCartResponse.class);
+        return modelMapper.map(shoppingCart, GetShoppingCartResponse.class);
     }
 
+    /* Creates new cart for user, returns cartId */
     @Transactional
     public CreateCartResponse createShoppingCart(CreateCartRequest createCartRequest) {
         CreateCartResponse createCartResponse = new CreateCartResponse();
@@ -56,10 +59,13 @@ public class ShoppingCartService {
             if (optionalShoppingCart != null) {
                 throw new InvalidInputException("Shopping cart already exists");
             }
+
             ShoppingCart shoppingCart = modelMapper.map(createCartRequest, ShoppingCart.class);
             shoppingCart.getShoppingCartItems().stream().forEach(shoppingCartItem -> shoppingCartItem.setShoppingCart(shoppingCart));
             shoppingCart.setUser(user);
+
             var result = shoppingCartRepository.save(shoppingCart);
+
             createCartResponse.setCartId(result.getId());
             return createCartResponse;
         } catch (InvalidInputException ex) {
@@ -72,47 +78,53 @@ public class ShoppingCartService {
         }
     }
 
+    /* Update book quantity of the cart item, calculates new price */
     public UpdateShoppingCartResponse updateBookQuantity(int cartId, int bookId, int quantity) {
         //
         UpdateShoppingCartResponse updateShoppingCartResponse = new UpdateShoppingCartResponse();
         try {
-            ShoppingCart cart = shoppingCartRepository.findById(cartId)
+            ShoppingCart existingCart = shoppingCartRepository.findById(cartId)
                     .orElseThrow(() -> new InvalidInputException("Cart not found"));
             Book book = bookRepository.findById(bookId)
                     .orElseThrow(() -> new InvalidInputException("book not found"));
-            // Calculate price
-            var modifiedCartPrice = calculateModifiedCartPrice(cart, book, quantity);
 
-            //existing book check
-            Optional<ShoppingCartItem> cartItem = cart.getShoppingCartItems().stream().filter(x -> x.getBook().getId() == bookId).findFirst();
-            if (cartItem.isEmpty()) {
-                ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
-                shoppingCartItem.setBook(book);
-                shoppingCartItem.setQuantity(quantity);
-                shoppingCartItem.setShoppingCart(cart);
-                cart.addShoppingCartItem(shoppingCartItem);
-                cart.setTotalPrice(modifiedCartPrice);
-                shoppingCartRepository.save(cart);
-                updateShoppingCartResponse.setTotalPrice(cart.getTotalPrice());
+            // Calculate new price
+            var modifiedCartPrice = calculateModifiedCartPrice(existingCart, book, quantity);
+
+            //if book is existing, then update the quantity, if not create new cart item
+            Optional<ShoppingCartItem> existingBookItem = existingCart.getShoppingCartItems().stream()
+                    .filter(x -> x.getBook().getId() == bookId)
+                    .findFirst();
+
+            if (existingBookItem.isEmpty()) {
+                ShoppingCartItem shoppingCartItem = new ShoppingCartItem(existingCart, book, quantity);
+                existingCart.addShoppingCartItem(shoppingCartItem);
+                existingCart.setTotalPrice(modifiedCartPrice);
+                shoppingCartRepository.save(existingCart);
+
+                updateShoppingCartResponse.setTotalPrice(existingCart.getTotalPrice());
                 return updateShoppingCartResponse;
             }
-            cart.setTotalPrice(modifiedCartPrice);
-            cart.getShoppingCartItems().stream().filter(x -> x.getBook().getId() == bookId).forEach(x -> x.setQuantity(quantity));
-            shoppingCartRepository.save(cart);
-            updateShoppingCartResponse.setTotalPrice(cart.getTotalPrice());
+            existingCart.setTotalPrice(modifiedCartPrice);
+            existingCart.getShoppingCartItems().stream()
+                    .filter(x -> x.getBook().getId() == bookId)
+                    .forEach(x -> x.setQuantity(quantity));
+
+            shoppingCartRepository.save(existingCart);
+            updateShoppingCartResponse.setTotalPrice(modifiedCartPrice);
             return updateShoppingCartResponse;
         } catch (InvalidInputException ex) {
-            logger.error("Exception while updating cart" + ex.getMessage());
+            logger.error("Exception while updating cart " + ex.getMessage());
             updateShoppingCartResponse.setErrorMessage(ex.getMessage());
             return updateShoppingCartResponse;
         } catch (Exception ex) {
-            logger.error("Error while creating cart... " + ex.getMessage());
+            logger.error("Error while updating cart " + ex.getMessage());
             throw ex;
         }
     }
 
+    /* Remove book from cart items table */
     public UpdateShoppingCartResponse removeCartItem(int cartId, int bookId) {
-        //
         UpdateShoppingCartResponse updateShoppingCartResponse = new UpdateShoppingCartResponse();
         try {
             ShoppingCart cart = shoppingCartRepository.findById(cartId)
@@ -122,57 +134,64 @@ public class ShoppingCartService {
 
 
             //existing book check
-            Optional<ShoppingCartItem> cartItemToBeRemoved = cart.getShoppingCartItems().stream().filter(x -> x.getBook().getId() == bookId).findFirst();
+            Optional<ShoppingCartItem> cartItemToBeRemoved = cart.getShoppingCartItems().stream()
+                    .filter(x -> x.getBook().getId() == bookId)
+                    .findFirst();
+
             if (cartItemToBeRemoved.isEmpty()) {
                 throw new InvalidInputException("book not present in cart");
             }
-            cart.getShoppingCartItems().remove(cartItemToBeRemoved.get());
-            // Calculate price
-            var modifiedCartPrice = calculateModifiedCartPrice(cart, book, 0);
 
+            cart.getShoppingCartItems().remove(cartItemToBeRemoved.get());
+            var modifiedCartPrice = calculateModifiedCartPrice(cart, book, 0);
             cart.setTotalPrice(modifiedCartPrice);
             shoppingCartRepository.save(cart);
-            updateShoppingCartResponse.setTotalPrice(cart.getTotalPrice());
+
+            updateShoppingCartResponse.setTotalPrice(modifiedCartPrice);
             return updateShoppingCartResponse;
         } catch (InvalidInputException ex) {
-            logger.error("Exception while updating cart" + ex.getMessage());
+            logger.error("Exception while removing cart item " + ex.getMessage());
             updateShoppingCartResponse.setErrorMessage(ex.getMessage());
             return updateShoppingCartResponse;
         } catch (Exception ex) {
-            logger.error("Error while creating cart... " + ex.getMessage());
+            logger.error("Error while removing cart item " + ex.getMessage());
             throw ex;
         }
     }
 
+    /* Deletes cart */
     public UpdateShoppingCartResponse deleteCart(int cartId) {
-        //
         UpdateShoppingCartResponse updateShoppingCartResponse = new UpdateShoppingCartResponse();
         try {
             ShoppingCart cart = shoppingCartRepository.findById(cartId)
                     .orElseThrow(() -> new InvalidInputException("Cart not found"));
+
             shoppingCartRepository.delete(cart);
             return updateShoppingCartResponse;
         } catch (InvalidInputException ex) {
-            logger.error("Exception while updating cart" + ex.getMessage());
+            logger.error("Exception while deleting cart" + ex.getMessage());
             updateShoppingCartResponse.setErrorMessage(ex.getMessage());
             return updateShoppingCartResponse;
         } catch (Exception ex) {
-            logger.error("Error while creating cart... " + ex.getMessage());
+            logger.error("Error while deleting cart... " + ex.getMessage());
             throw ex;
         }
     }
 
 
     private BigDecimal calculateModifiedCartPrice(ShoppingCart cart, Book book, int quantity) {
-        BigDecimal existingPriceWithoutBookId = BigDecimal.ZERO;
+        BigDecimal cartPriceWithoutBook = BigDecimal.ZERO;
+
         for (int i = 0; i < cart.getShoppingCartItems().size(); i++) {
             var currentItem = cart.getShoppingCartItems().get(i);
+
             if (currentItem.getBook().getId() != book.getId()) {
-                existingPriceWithoutBookId = existingPriceWithoutBookId.
-                        add(BigDecimal.valueOf(currentItem.getQuantity()).multiply(currentItem.getBook().getUnitPrice()));
+                cartPriceWithoutBook = cartPriceWithoutBook
+                        .add(BigDecimal.valueOf(currentItem.getQuantity()).multiply(currentItem.getBook().getUnitPrice()));
             }
         }
-        BigDecimal modifiedBookPrice = book.getUnitPrice().multiply(BigDecimal.valueOf(quantity));
-        return existingPriceWithoutBookId.add(modifiedBookPrice);
+
+        BigDecimal bookPrice = book.getUnitPrice().multiply(BigDecimal.valueOf(quantity));
+        return cartPriceWithoutBook.add(bookPrice);
     }
 }

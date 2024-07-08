@@ -3,7 +3,10 @@ package com.kata.bookstore.model.api;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
-public class PlaceOrderResponse {
+import java.io.Serializable;
+
+@Getter
+@Setter
+public class PlaceOrderResponse implements Serializable {
     private String ErrorMessage;
 }

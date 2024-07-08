@@ -1,6 +1,5 @@
 package com.kata.bookstore.service;
 
-import com.kata.bookstore.dao.BookRepository;
 import com.kata.bookstore.dao.OrderRepository;
 import com.kata.bookstore.dao.ShoppingCartRepository;
 import com.kata.bookstore.dao.UserRepository;
@@ -24,7 +23,7 @@ import java.util.List;
 
 @Service
 public class OrderService {
-    Logger logger = LoggerFactory.getLogger(ShoppingCartService.class);
+    Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Autowired
     OrderRepository orderRepository;
@@ -33,10 +32,9 @@ public class OrderService {
     UserRepository userRepository;
 
     @Autowired
-    BookRepository bookRepository;
-    @Autowired
     ShoppingCartRepository shoppingCartRepository;
 
+    /* Places order with given cart items, deletes existing cart */
     @Transactional
     public PlaceOrderResponse placeOrder(PlaceOrderRequest placeOrderRequest) {
         //
@@ -49,6 +47,7 @@ public class OrderService {
                     .orElseThrow(() -> new InvalidInputException("User not found"));
 
             Order order = new Order(user, cart.getTotalPrice(), OrderStatus.ORDER_PLACED, new Date());
+
             List<OrderItem> orderItems = new ArrayList<>();
             for (int i = 0; i < cart.getShoppingCartItems().size(); i++) {
                 var currentItem = cart.getShoppingCartItems().get(i);
@@ -56,6 +55,7 @@ public class OrderService {
                 orderItems.add(orderItem);
             }
             order.setOrderItems(orderItems);
+
             orderRepository.save(order);
             shoppingCartRepository.delete(cart);
             return placeOrderResponse;

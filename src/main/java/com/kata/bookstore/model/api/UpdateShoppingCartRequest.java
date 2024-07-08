@@ -5,7 +5,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Getter @Setter
+@Getter
+@Setter
 public class UpdateShoppingCartRequest {
     private int cartId;
     private int bookId;
