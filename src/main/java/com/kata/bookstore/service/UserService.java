@@ -66,7 +66,7 @@ public class UserService {
                 throw new InvalidInputException("User name does not exist");
             }
 
-            // Create new user's account
+            // Validate existing user
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
 

@@ -24,7 +24,7 @@ public class BookController {
         return mappingService.mapList(bookList, BookResponse.class);
     }
 
-    @GetMapping("searchBook")
+    @GetMapping("search")
     public List<BookResponse> searchBook(@RequestParam String searchCriteria) {
         var bookList = bookService.searchBook(searchCriteria);
         return mappingService.mapList(bookList, BookResponse.class);

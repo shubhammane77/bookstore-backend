@@ -22,7 +22,7 @@ To get started with this project, follow these steps:
 
    mvn clean package
 
-3. To start the app on 3000 port.
+3. To start the app on 8089 port.
 
    cd target 
    
@@ -43,5 +43,14 @@ dao/        // JPA dao interfaces
 model/      // Model files
 security/   // Spring Security configuration
 service/   // Service components
+
+
+Technologies Used
+Java 17
+Spring Boot
+Spring Security
+H2 Database
+Swagger
+Maven
 
 
