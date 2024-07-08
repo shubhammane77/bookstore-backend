@@ -22,10 +22,6 @@ public class Book {
     @Column
     private BigDecimal unitPrice;
     @Column
-    private int stockQuantity;
-    @Column
     private String genres;
-    @Column
-    private String imageUrl;
 
 }

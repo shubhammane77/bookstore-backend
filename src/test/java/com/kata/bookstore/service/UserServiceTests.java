@@ -3,7 +3,6 @@ package com.kata.bookstore.service;
 import com.kata.bookstore.dao.UserRepository;
 import com.kata.bookstore.model.User;
 import com.kata.bookstore.model.api.AuthRequest;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

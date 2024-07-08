@@ -24,7 +24,6 @@ public class ShoppingCartTest {
         var book1 = new Book();
         book1.setAuthor(author);
         book1.setTitle("TestTitle");
-        book1.setStockQuantity(20);
         book1.setUnitPrice(BigDecimal.TEN);
         bookList = new ArrayList<>();
         bookList.add(book1);

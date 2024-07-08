@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/v1/cart")
+@RequestMapping("/v1/carts")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ShoppingCartController {
     @Autowired
@@ -34,7 +34,7 @@ public class ShoppingCartController {
     public ResponseEntity<CreateCartResponse> createShoppingCart(@RequestBody CreateCartRequest createCartRequest) {
         var result = shoppingCartService.createShoppingCart(createCartRequest);
         if (result.getErrorMessage() != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
         }
         return new ResponseEntity(result, CREATED);
     }
@@ -66,12 +66,4 @@ public class ShoppingCartController {
         return new ResponseEntity(result, OK);
     }
 
-//    @DeleteMapping("checkOut")
-//    public ResponseEntity<CheckOutResponse> checkOut(@RequestParam int cartId) {
-//        var result = shoppingCartService.checkOut(cartId);
-//        if (result.getErrorMessage() != null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-//        }
-//        return new ResponseEntity(result, OK);
-//    }
 }

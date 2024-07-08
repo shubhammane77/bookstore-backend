@@ -1,7 +1,6 @@
 package com.kata.bookstore.dao;
 
 
-import com.kata.bookstore.model.ShoppingCart;
 import com.kata.bookstore.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

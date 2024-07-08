@@ -47,7 +47,6 @@ public class OrderService {
 
             User user = userRepository.findById(placeOrderRequest.getUserId())
                     .orElseThrow(() -> new InvalidInputException("User not found"));
-            cart.getShoppingCartItems().stream().forEach(x -> x.getBook().setStockQuantity(x.getBook().getStockQuantity() - x.getQuantity()));
 
             Order order = new Order(user, cart.getTotalPrice(), OrderStatus.ORDER_PLACED, new Date());
             List<OrderItem> orderItems = new ArrayList<>();

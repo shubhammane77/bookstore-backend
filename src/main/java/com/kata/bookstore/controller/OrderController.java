@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@RequestMapping("/v1/order")
+@RequestMapping("/v1/orders")
 @CrossOrigin(origins = "http://localhost:3000")
 public class OrderController {
     @Autowired
