@@ -1,23 +1,26 @@
 package com.kata.bookstore.service;
 
+import com.kata.bookstore.dao.BookPagingRepository;
 import com.kata.bookstore.dao.BookRepository;
 import com.kata.bookstore.model.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class BookService {
     @Autowired
     BookRepository bookRepository;
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
-    }
-
-    public List<Book> searchBook(String searchCriteria) {
-        return bookRepository.findByTitleContainingIgnoreCase(searchCriteria);
+    @Value("${page.size:10}")
+    private int PageSize=10;
+    @Autowired
+    BookPagingRepository bookPagingRepository;
+    public Page<Book> searchBook(String searchCriteria, int pageNo) {
+        PageRequest pageable = PageRequest.of(pageNo, PageSize);
+        return bookPagingRepository.findByTitleContainingIgnoreCase(searchCriteria, pageable);
     }
 
 }
