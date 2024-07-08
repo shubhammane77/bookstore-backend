@@ -1,6 +1,6 @@
-# BookStore backend Application
+# BookStore Backend
 
-Welcome to BookStore backend Application repository. This repository houses a Spring Boot application with spring security for JWT authentication, h2 as database and Swagger Apis.
+Welcome to BookStore Backend repository. This repository houses a Spring Boot application with spring security for JWT authentication, h2 as database and Swagger Apis.
 
 ## Table of Contents
 
@@ -12,13 +12,13 @@ Welcome to BookStore backend Application repository. This repository houses a Sp
 
 To get started with this project, follow these steps:
 
-1. Clone the repository to your local machine:
+1. Clone the repository to your local machine.
 
          git clone  https://github.com/shubhammane77/bookstore-backend.git
 
          cd bookstore-backend
 
-2. Install all the dependencies or import project and Intellij
+2. Install all the dependencies or import project and Intellij.
 
          mvn clean package
 
@@ -28,11 +28,11 @@ To get started with this project, follow these steps:
    
          java -jar  bookstore-0.0.1-SNAPSHOT.jar
 
-4. Access the swagger menu and h2 database
+4. Access the swagger menu and h2 database.
 
-         Open a web browser and go to http://localhost:8089/swagger-ui/index.html#/  to see swagger apis.
+         http://localhost:8089/swagger-ui/index.html#/
    
-         h2 database can be accessed via http://localhost:8089/h2-console
+         http://localhost:8089/h2-console
 
 
 ## Technologies Used
