@@ -15,16 +15,12 @@ public class User {
     @Column
     private String userName;
     @Column
-    private String firstName;
-    @Column
-    private String lastName;
-    @Column
     private String emailAddress;
+    @Column
+    private String encPassword;
 
-    public User(String userName, String firstName, String lastName, String emailAddress) {
+    public User(String userName, String emailAddress) {
         this.userName = userName;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.emailAddress = emailAddress;
     }
 }
