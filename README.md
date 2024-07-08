@@ -1,51 +1,47 @@
-Project Title
-Brief description of the project.
+# BookStore backend Application
 
-Table of Contents
-Introduction
-Technologies Used
-Setup
-Usage
-Contributing
-License
-Introduction
-Provide a brief introduction to the project. What does it do? Why was it created?
+Welcome to the README for the BookStore backend Application repository. This repository houses a Spring Boot application with spring security for authentication, h2 as database and Swagger Apis.
 
-Technologies Used
-List the technologies/frameworks/libraries used in the project. For example:
+## Table of Contents
 
-Spring Boot
-Maven
-Java 17
-Spring Data JPA
-H2 Database (or any other database used)
-Swagger Apis
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+
+## Installation
+
+To get started with this project, follow these steps:
+
+1. Clone the repository to your local machine:
 
 
-Setup
-Prerequisites
-Make sure you have the following installed:
+   git clone  https://github.com/shubhammane77/bookstore-backend.git
+   cd bookstore-backend
 
-Java JDK 17
-Maven
-Installation
-Clone the repository:
+2. Install all the dependencies or import project and Intellij
 
-git clone  https://github.com/shubhammane77/bookstore-backend.git
+   mvn clean package
 
-Navigate into the project directory:
+3. To start the app on 3000 port.
 
-cd bookstore-backend
+   cd target 
+   
+   java -jar  bookstore-0.0.1-SNAPSHOT.jar
 
-Build the project using Maven or import the project in Intellij:
+4. Access the swagger menu and h2 database
 
-mvn clean package
+   Open a web browser and go to http://localhost:8089/swagger-ui/index.html#/  to see swagger apis.
+   h2 database can be accessed via http://localhost:8089/h2-console
 
-Run the project with
 
-cd target
-java -jar  bookstore-0.0.1-SNAPSHOT.jar
+## Project Structure
 
-Access the application:
-Open a web browser and go to http://localhost:8089/swagger-ui/index.html#/  to see swagger apis.
-h2 database can be accessed via http://localhost:8089/h2-console
+bookstore-backend/
+README.md
+controller/ // controller apis
+dao/        // JPA dao interfaces
+model/      // Model files
+security/   // Spring Security configuration
+service/   // Service components
+
+
