@@ -13,7 +13,6 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/v1/carts")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ShoppingCartController {
     @Autowired
     ShoppingCartService shoppingCartService;
@@ -22,7 +21,7 @@ public class ShoppingCartController {
     ModelMapper modelMapper;
 
     @GetMapping("getShoppingCart")
-    public ResponseEntity<ShoppingCartResponse> getShoppingCart(@RequestParam int userId) {
+    public ResponseEntity<GetShoppingCartResponse> getShoppingCart(@RequestParam int userId) {
         var result = shoppingCartService.getShoppingCart(userId);
         if (result == null) {
             return ResponseEntity.notFound().build();

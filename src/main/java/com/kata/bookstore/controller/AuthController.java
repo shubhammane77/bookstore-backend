@@ -17,7 +17,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/v1/auth")
-
 public class AuthController {
 
     @Autowired

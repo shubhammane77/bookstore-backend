@@ -7,7 +7,8 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Getter @Setter
+@Getter
+@Setter
 public class BookResponse implements Serializable {
     private int id;
     private String title;

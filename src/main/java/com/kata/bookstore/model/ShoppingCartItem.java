@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "ShoppingCartItems")
 public class ShoppingCartItem {
@@ -22,4 +24,9 @@ public class ShoppingCartItem {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
+    public ShoppingCartItem(ShoppingCart shoppingCart, Book book, int quantity) {
+        this.shoppingCart = shoppingCart;
+        this.quantity = quantity;
+        this.book = book;
+    }
 }
