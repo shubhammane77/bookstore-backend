@@ -12,26 +12,42 @@ Welcome to BookStore Backend repository. This repository houses a Spring Boot ap
 
 To get started with this project, follow these steps:
 
+Make sure you have JDK 17 installed on your computer.
+
+Option 1:
+
 1. Clone the repository to your local machine.
 
-         git clone  https://github.com/shubhammane77/bookstore-backend.git
+         git clone https://github.com/shubhammane77/bookstore-backend.git
 
          cd bookstore-backend
 
-2. Install all the dependencies or import project and Intellij.
+2. Run java application
 
-         mvn clean package
+         java -jar bookstore.jar
 
-3. To start the app on 8089 port.
+3. Access the swagger menu and h2 database.
 
-         cd target 
+         http://localhost:8089/swagger-ui/index.html#/
+
+         http://localhost:8089/h2-console
+
+Option 2: 
+
+1. Clone the repository to your local machine.
+
+         git clone https://github.com/shubhammane77/bookstore-backend.git
+
+         cd bookstore-backend
+
+2. Import project in Intellij using pom.xml.
    
-         java -jar  bookstore-0.0.1-SNAPSHOT.jar
+3. Run BookstoreApplication.java application
 
 4. Access the swagger menu and h2 database.
 
          http://localhost:8089/swagger-ui/index.html#/
-   
+
          http://localhost:8089/h2-console
 
 
