@@ -42,7 +42,7 @@ Option 2:
 
 2. Import project in Intellij using pom.xml.
    
-3. Run BookstoreApplication.java application
+3. Run BookstoreApplication.java.
 
 4. Access the swagger menu and h2 database.
 
