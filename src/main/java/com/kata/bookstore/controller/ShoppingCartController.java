@@ -48,7 +48,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping("removeCartItem")
-    public ResponseEntity<UpdateShoppingCartResponse> removeCartItem(@RequestParam int cartId, int bookId) {
+    public ResponseEntity<UpdateShoppingCartResponse> removeCartItem(@RequestParam int cartId, int bookId) throws Exception {
         var result = shoppingCartService.removeCartItem(cartId, bookId);
         if (result.getErrorMessage() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
