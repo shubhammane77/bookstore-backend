@@ -59,10 +59,7 @@ public class UserServiceTests {
         invalidEmail = "tes-tgmail.com";
         validUserId = 1;
         jwtToken = "SECURE_TOKEN";
-        User user = new User();
-        user.setUserName(existingUserName);
-        user.setEmailAddress(existingEmailAddress);
-        user.setEncPassword(existingUserPassword);
+        User user = new User(existingUserName,existingEmailAddress,passwordEncoder.encode(existingUserPassword));
         when(userRepository.findByUserName(existingUserName)).thenReturn(user);
         when(userRepository.findByEmailAddress(existingEmailAddress)).thenReturn(user);
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), invalidPassword))).thenThrow(BadCredentialsException.class);

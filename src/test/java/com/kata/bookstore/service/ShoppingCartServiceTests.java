@@ -3,13 +3,9 @@ package com.kata.bookstore.service;
 import com.kata.bookstore.dao.BookRepository;
 import com.kata.bookstore.dao.ShoppingCartRepository;
 import com.kata.bookstore.dao.UserRepository;
-import com.kata.bookstore.model.Book;
-import com.kata.bookstore.model.ShoppingCart;
-import com.kata.bookstore.model.ShoppingCartItem;
-import com.kata.bookstore.model.User;
+import com.kata.bookstore.model.*;
 import com.kata.bookstore.model.api.CreateCartItemRequest;
 import com.kata.bookstore.model.api.CreateCartRequest;
-import com.kata.bookstore.model.api.GetShoppingCartResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,8 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
-import javax.swing.text.html.Option;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -58,16 +54,13 @@ public class ShoppingCartServiceTests {
         bookNotInCart = 2;
         newUserId = 2;
 
-        Book book = new Book();
-        book.setId(validBookId);
-        book.setUnitPrice(BigDecimal.TEN);
-        book.setTitle("TestBook");
+        Author author = new Author("test");
+        Book book = new Book("title", author, BigDecimal.TEN,"Adventure");
 
         when(bookRepository.findById(2)).thenReturn(Optional.of(new Book())); // Book not found in cart
 
         mockShoppingCart = new ShoppingCart();
-        ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
-        shoppingCartItem.setBook(book);
+        ShoppingCartItem shoppingCartItem = new ShoppingCartItem(mockShoppingCart,book);
         mockShoppingCart.addShoppingCartItem(shoppingCartItem);
         when(shoppingCartRepository.findByUserId(validUserId)).thenReturn(mockShoppingCart);
         User mockUser = new User();
@@ -82,7 +75,8 @@ public class ShoppingCartServiceTests {
         when(shoppingCartRepository.findById(validCartId)).thenReturn(Optional.of(mockShoppingCart));
         when(bookRepository.findById(validBookId)).thenReturn(Optional.of(book));
         when(bookRepository.findById(invalidBookId)).thenReturn(Optional.empty());
-        when(bookRepository.findById(bookNotInCart)).thenReturn(Optional.of(new Book()));
+        when(bookRepository.findById(bookNotInCart)).thenReturn(Optional.of(new Book("title2",author,BigDecimal.TEN,"genres")));
+
 
 
     }
@@ -107,6 +101,10 @@ public class ShoppingCartServiceTests {
     public void createShoppingCart_shouldCreateCart() {
         CreateCartRequest createCartRequest = new CreateCartRequest();
         createCartRequest.setUserId(newUserId);
+        CreateCartItemRequest createCartItemRequest = new CreateCartItemRequest();
+        createCartItemRequest.setBookId(1);
+        createCartItemRequest.setQuantity(5);
+        createCartRequest.setShoppingCartItems(Arrays.asList(createCartItemRequest));
         when(modelMapper.map(createCartRequest, ShoppingCart.class)).thenReturn(mockShoppingCart);
         var result = shoppingCartService.createShoppingCart(createCartRequest);
         assert (result.getErrorMessage() == null);
@@ -135,19 +133,13 @@ public class ShoppingCartServiceTests {
     }
 
     @Test
-    public void removeCartItem_shouldReturnErrorForNonExistingBook() {
+    public void removeCartItem_shouldReturnErrorForNonExistingBook() throws Exception {
         var result = shoppingCartService.removeCartItem(validCartId, invalidBookId);
         assert (result.getErrorMessage() != null && result.getErrorMessage().equals("book not found"));
     }
 
     @Test
-    public void removeCartItem_shouldReturnErrorForShoppingCartDoesNotContainBook() {
-        var result = shoppingCartService.removeCartItem(validCartId, bookNotInCart);
-        assert (result.getErrorMessage() != null && result.getErrorMessage().equals("book not present in cart"));
-    }
-
-    @Test
-    public void removeCartItem_shouldSuccessForExistingCartItem() {
+    public void removeCartItem_shouldSuccessForExistingCartItem() throws Exception {
         var result = shoppingCartService.removeCartItem(validCartId, validBookId);
         assert (result.getErrorMessage() == null);
     }

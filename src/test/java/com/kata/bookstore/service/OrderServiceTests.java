@@ -58,13 +58,13 @@ public class OrderServiceTests {
         placeOrderRequest.setCartId(1);
         placeOrderRequest.setUserId(1);
 
+        User user = new User();
         ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
-        ShoppingCart shoppingCart = new ShoppingCart();
+        ShoppingCart shoppingCart = new ShoppingCart(user);
         shoppingCart.addShoppingCartItem(shoppingCartItem);
-        shoppingCart.setUser(new User());
 
         when(shoppingCartRepository.findById(1)).thenReturn(Optional.of(shoppingCart));
-        when(userRepository.findById(1)).thenReturn(Optional.of(new User()));
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
 
         var result = orderService.placeOrder(placeOrderRequest);
         assert (result.getErrorMessage() == null);

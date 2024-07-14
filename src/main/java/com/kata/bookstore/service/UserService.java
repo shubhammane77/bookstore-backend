@@ -56,9 +56,7 @@ public class UserService {
 
             // Create new user's account
             User user = new User(userRegistrationRequest.getUserName(),
-                    userRegistrationRequest.getEmailAddress());
-
-            user.setEncPassword(passwordEncoder.encode(userRegistrationRequest.getPassword()));
+                    userRegistrationRequest.getEmailAddress(),passwordEncoder.encode(userRegistrationRequest.getPassword()));
             userRepository.save(user);
             authResponse.setSuccess(true);
             return authResponse;

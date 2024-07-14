@@ -1,12 +1,11 @@
 package com.kata.bookstore.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "Users")
@@ -21,8 +20,9 @@ public class User {
     @Column
     private String encPassword;
 
-    public User(String userName, String emailAddress) {
+    public User(String userName, String emailAddress, String encPassword) {
         this.userName = userName;
         this.emailAddress = emailAddress;
+        this.encPassword = encPassword;
     }
 }
